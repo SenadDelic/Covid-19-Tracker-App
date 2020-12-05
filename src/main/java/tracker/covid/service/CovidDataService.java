@@ -1,6 +1,7 @@
 package tracker.covid.service;
 
 import com.opencsv.CSVReader;
+import lombok.Getter;
 import org.springframework.stereotype.Service;
 import tracker.covid.model.Covid;
 
@@ -13,8 +14,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Service
 public class CovidDataService {
+    List<Covid> covidData = new ArrayList<>();
     private static final String VIRUS_DATA_URL =
             "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/12-03-2020.csv";
 
@@ -58,6 +61,6 @@ public class CovidDataService {
             }
             newStats.add(covid);
         }
-        newStats.forEach(System.out::println);
+        this.covidData = newStats;
     }
 }
