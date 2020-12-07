@@ -5,7 +5,6 @@
     <title>Covid 19 Tracker</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 </head>
 
 <body>
@@ -23,20 +22,21 @@
             <th>Confirmed</th>
             <th>Active</th>
             <th>Recovered</th>
+            <th>Last Update</th>
         </tr>
         </thead>
 
         <tbody>
         <tr th:each="covid : ${covidData}">
-
             <td><p th:text="${covid.combinedKey}"></p></td>
             <td th:text="${covid.confirmed}"></td>
             <td th:text="${covid.active}"></td>
             <td th:text="${covid.recovered}"></td>
-
+            <td th:text="${covid.lastUpdate}"></td>
         </tr>
         </tbody>
     </table>
 </div>
+
 </body>
 </html>
