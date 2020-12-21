@@ -9,17 +9,21 @@ import javax.annotation.PostConstruct;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @Getter
 @Service
 public class CovidDataService {
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"); // MM/DD/YYYY HH:mm:ss
-    private static final String VIRUS_DATA_URL =
-            "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/12-03-2020.csv";
+    private final String VIRUS_DATA_URL =
+            "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/"
+                    + getDate()
+                    + ".csv";
     private List<Covid> covidData = new ArrayList<>();
 
     @PostConstruct
@@ -43,11 +47,6 @@ public class CovidDataService {
                 continue;
             }
 
-            /*
-             * The NumberFormatException is basically caused because the input string is not well formatted or
-             * illegal while parsing into a numerical value. So, to avoid this exception,
-             * the input string provided has to be well formatted.
-             */
             Covid covid = new Covid();
             try {
                 covid.setLastUpdate(LocalDateTime.parse(line[4], FORMATTER));
@@ -57,11 +56,24 @@ public class CovidDataService {
                 covid.setActive(Long.valueOf(line[10]));
                 covid.setCombinedKey(line[11]);
 
-            } catch (NumberFormatException ex) { //request for well-formatted string
+            } catch (NumberFormatException ex) {
                 System.err.println("Invalid string in argument");
             }
             newStats.add(covid);
         }
         this.covidData = newStats;
+    }
+
+    private String getDate() {
+        Calendar calendar = subtractOneDay();
+        SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
+        String strDate = formatter.format(calendar.getTime());
+        return strDate;
+    }
+
+    private Calendar subtractOneDay() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        return cal;
     }
 }
